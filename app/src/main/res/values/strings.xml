@@ -14,4 +14,10 @@
     <string name="correct_toast">верно</string>
     <string name="incorrect_toast">не верно</string>
     <string name="next_button">следущий</string>
+    <string name="warning_text">вы точно хотите посмотреть ответ?</string>
+    <string name="show_answer_button">посмореть ответ</string>
+    <string name="cheat_button">ответ</string>
+    <string name="judgment_toast">не жульничай</string>
+    <string name="true_button">верно</string>
+    <string name="false_button">не верно</string>
 </resources>
