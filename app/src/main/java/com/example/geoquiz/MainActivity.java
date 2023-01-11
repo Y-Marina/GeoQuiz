@@ -138,8 +138,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateQuestion() {
-        int qustion = mQuestionBank[mCurrentIndex].getmNextResId();
-        mQuestionTextView.setText(qustion);
+        int question = mQuestionBank[mCurrentIndex].getmNextResId();
+        mQuestionTextView.setText(question);
     }
 
     private void checkAnswer(boolean userPressedTrue) {
