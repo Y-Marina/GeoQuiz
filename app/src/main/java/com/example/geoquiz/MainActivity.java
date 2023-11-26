@@ -1,5 +1,6 @@
 package com.example.geoquiz;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
@@ -8,6 +9,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "QuizActivity";
     private static final String KEY_INDEX = "index";
+    private static final String KEY_COUNT_CHEAT = "KEY_COUNT_CHEAT";
     private static final int REQUEST_CODE_CHEAT = 0;
     private boolean mIsCheater;
     private Button mTrueButton;
@@ -24,17 +28,20 @@ public class MainActivity extends AppCompatActivity {
     private Button mNextButton;
     private Button mCheatButton;
     private TextView mQuestionTextView;
+    private ImageView mImageView;
+    private int countCheat = 3;
+
 
     private Question[] mQuestionBank = new Question[] {
-            new Question(R.string.q1, false),
-            new Question(R.string.q2, true),
-            new Question(R.string.q3, true),
-            new Question(R.string.q4, true),
-            new Question(R.string.q5, false),
-            new Question(R.string.q6, true),
-            new Question(R.string.q7, true),
-            new Question(R.string.q8, true),
-            new Question(R.string.q9, false)
+            new Question(R.string.q1, false, R.drawable.osminog),
+            new Question(R.string.q2, true, R.drawable.bambuka),
+            new Question(R.string.q3, true, R.drawable.comp),
+            new Question(R.string.q4, true, R.drawable.zebra),
+            new Question(R.string.q5, false, R.drawable.beley_bear),
+            new Question(R.string.q6, true, R.drawable.muesh),
+            new Question(R.string.q7, true, R.drawable.pen),
+            new Question(R.string.q8, true, R.drawable.utenok),
+            new Question(R.string.q9, false, R.drawable.bogomol)
     };
 
     private int mCurrentIndex = 0;
@@ -48,6 +55,8 @@ public class MainActivity extends AppCompatActivity {
         if (savedInstanceState != null) {
             mCurrentIndex = savedInstanceState.getInt(KEY_INDEX, 0);
         }
+
+        mImageView = (ImageView) findViewById(R.id.image_view);
 
         mQuestionTextView = (TextView) findViewById(R.id.question_text_view);
 
@@ -77,13 +86,24 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Start CheatActivity
-                boolean answerIsTrue = mQuestionBank[mCurrentIndex].ismAnswerTrue();
-                Intent intent = CheatActivity.newIntent(MainActivity.this, answerIsTrue);
-                startActivityForResult(intent, REQUEST_CODE_CHEAT);
+                if (countCheat == 0) {
+                    Toast.makeText(MainActivity.this, "подсказки закончились ¯\\_(ツ)_/¯", Toast.LENGTH_SHORT).show();
+                } else {
+                    countCheat = countCheat - 1;
+                    boolean answerIsTrue = mQuestionBank[mCurrentIndex].ismAnswerTrue();
+                    Intent intent = CheatActivity.newIntent(MainActivity.this, answerIsTrue);
+                    startActivityForResult(intent, REQUEST_CODE_CHEAT);
+                }
             }
         });
 
         updateQuestion();
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        countCheat = savedInstanceState.getInt(KEY_COUNT_CHEAT, 3);
     }
 
     @Override
@@ -123,6 +143,7 @@ public class MainActivity extends AppCompatActivity {
         super.onSaveInstanceState(savedInstanceState);
         Log.i(TAG, "onSaveInstanceState");
         savedInstanceState.putInt(KEY_INDEX, mCurrentIndex);
+        savedInstanceState.putInt(KEY_COUNT_CHEAT, countCheat);
     }
 
     @Override
@@ -139,7 +160,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateQuestion() {
         int question = mQuestionBank[mCurrentIndex].getmNextResId();
+        int imege = mQuestionBank[mCurrentIndex].getmImage();
         mQuestionTextView.setText(question);
+        mImageView.setImageResource(imege);
     }
 
     private void checkAnswer(boolean userPressedTrue) {
